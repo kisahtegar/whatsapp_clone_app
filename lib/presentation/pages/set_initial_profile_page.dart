@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone_app/presentation/screens/home_screen.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 class SetInitialProfilePage extends StatefulWidget {
@@ -52,7 +53,14 @@ class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   color: greenColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  },
                   child: const Text(
                     "Next",
                     style: TextStyle(
