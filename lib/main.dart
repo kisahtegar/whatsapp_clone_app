@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone_app/presentation/screens/welcome_screen.dart';
+import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 import 'firebase_options.dart';
 
@@ -17,10 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'WhatsApp Clone App',
-      home: WelcomeScreen(),
+      theme: ThemeData(primaryColor: primaryColor),
+      home: const WelcomeScreen(),
     );
   }
 }

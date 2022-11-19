@@ -48,6 +48,8 @@ dependencies:
   # etc..
   responsive_builder: ^0.4.3
   camera: ^0.10.0+4
+  image_picker: ^0.8.6
+  # flutter_image_gallery: ^1.0.6 # DEPRECATED
   # custom_image_picker: ^0.5.0 # DEPRECATED
   country_pickers: ^2.0.0
   masked_text_input_formatter: ^0.0.1
