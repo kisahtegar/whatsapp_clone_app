@@ -8,7 +8,12 @@ import '../pages/chat_page.dart';
 import '../pages/status_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String uid;
+
+  const HomeScreen({
+    super.key,
+    required this.uid,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
