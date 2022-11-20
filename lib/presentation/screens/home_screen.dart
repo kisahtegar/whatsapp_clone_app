@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/auth/auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/custom_tab_bar.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
@@ -63,7 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 5),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    BlocProvider.of<AuthCubit>(context).loggedOut();
+                  },
                   child: const Icon(Icons.more_vert),
                 ),
               ],

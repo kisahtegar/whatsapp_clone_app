@@ -20,7 +20,7 @@ class FirebaseRemoteDataSourceImpl extends FirebaseRemoteDataSource {
 
     userCollection.doc(uid).get().then((userDoc) {
       final newUser = UserModel(
-        uid: user.uid,
+        uid: uid,
         name: user.name,
         status: user.status,
         phoneNumber: user.phoneNumber,

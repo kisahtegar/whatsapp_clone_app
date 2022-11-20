@@ -2,7 +2,12 @@ import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_picker_dialog.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/auth/auth_cubit.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/pages/phone_verification_page.dart';
+import 'package:whatsapp_clone_app/presentation/pages/set_initial_profile_page.dart';
+import 'package:whatsapp_clone_app/presentation/screens/home_screen.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -15,8 +20,8 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   static Country _selectedFilteredDialogCountry =
       CountryPickerUtils.getCountryByPhoneCode("62");
-  String _countryCode = "+62";
-  // String _phoneNumber = "";
+  String _countryCode = _selectedFilteredDialogCountry.phoneCode;
+  String _phoneNumber = "";
 
   TextEditingController _phoneAuthController = TextEditingController();
 
@@ -29,100 +34,127 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Column(
-          children: <Widget>[
-            // NOTE: Top Text and Description
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text(""),
-                Text(
-                  "Verify your phone number",
+      body: BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
+        listener: (context, phoneAuthstate) {
+          if (phoneAuthstate is PhoneAuthSuccess) {
+            BlocProvider.of<AuthCubit>(context).loggedIn();
+          }
+          if (phoneAuthstate is PhoneAuthFailure) {
+            toast("Something wrong");
+          }
+        },
+        builder: (context, phoneAuthState) {
+          if (phoneAuthState is PhoneAuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (phoneAuthState is PhoneAuthSmsCodeReceived) {
+            return PhoneVerificationPage(phoneNumber: _phoneNumber);
+          }
+          if (phoneAuthState is PhoneAuthProfileInfo) {
+            return SetInitialProfilePage(phoneNumber: _phoneNumber);
+          }
+          if (phoneAuthState is PhoneAuthSuccess) {
+            return BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, authState) {
+                if (authState is Authenticated) {
+                  return HomeScreen(uid: authState.uid);
+                }
+                return const SizedBox();
+              },
+            );
+          }
+          return _bodyWidget(context);
+        },
+      ),
+    );
+  }
+
+  Container _bodyWidget(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      child: Column(
+        children: <Widget>[
+          // NOTE: Top Text and Description
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const <Widget>[
+              Text(""),
+              Text(
+                "Verify your phone number",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: greenColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Icon(Icons.more_vert)
+            ],
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            "WhatsApp Clone will send and SMS message (carrier charges may apply) to verify your phone number. Enter your country code and phone number:",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 30),
+
+          // NOTE: ListTile for List country
+          ListTile(
+            onTap: _openFilteredCountryPickerDialog,
+            title: _buildDialogItem(_selectedFilteredDialogCountry),
+          ),
+
+          // NOTE: Phone Number Input
+          Row(
+            children: <Widget>[
+              // Phone Code
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 1.50,
+                      color: greenColor,
+                    ),
+                  ),
+                ),
+                width: 80,
+                height: 42,
+                alignment: Alignment.center,
+                child: Text(_selectedFilteredDialogCountry.phoneCode),
+              ),
+              const SizedBox(width: 8.0),
+              // Input phone number
+              Expanded(
+                child: SizedBox(
+                  height: 40,
+                  child: TextField(
+                    controller: _phoneAuthController,
+                    decoration: const InputDecoration(hintText: "Phone Number"),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // NOTE: Next Button
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: MaterialButton(
+                color: greenColor,
+                onPressed: _submitVerifyPhoneNumber,
+                child: const Text(
+                  "Next",
                   style: TextStyle(
                     fontSize: 18,
-                    color: greenColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Icon(Icons.more_vert)
-              ],
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              "WhatsApp Clone will send and SMS message (carrier charges may apply) to verify your phone number. Enter your country code and phone number:",
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // NOTE: ListTile for List country
-            ListTile(
-              onTap: _openFilteredCountryPickerDialog,
-              title: _buildDialogItem(_selectedFilteredDialogCountry),
-            ),
-
-            // NOTE: Phone Number Input
-            Row(
-              children: <Widget>[
-                // Phone Code
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        width: 1.50,
-                        color: greenColor,
-                      ),
-                    ),
-                  ),
-                  width: 80,
-                  height: 42,
-                  alignment: Alignment.center,
-                  child: Text(_selectedFilteredDialogCountry.phoneCode),
-                ),
-                const SizedBox(width: 8.0),
-                // Input phone number
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: TextField(
-                      controller: _phoneAuthController,
-                      decoration:
-                          const InputDecoration(hintText: "Phone Number"),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // NOTE: Next Button
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: MaterialButton(
-                  color: greenColor,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PhoneVerificationPage(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Next",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+                    color: Colors.white,
                   ),
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -180,5 +212,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  // void _submitVerifyPhoneNumber() {}
+  void _submitVerifyPhoneNumber() {
+    if (_phoneAuthController.text.isNotEmpty) {
+      _phoneNumber = "+$_countryCode${_phoneAuthController.text}";
+      BlocProvider.of<PhoneAuthCubit>(context).submitVerifyPhoneNumber(
+        phoneNumber: _phoneNumber,
+      );
+    }
+  }
 }

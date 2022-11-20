@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/pages/set_initial_profile_page.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 class PhoneVerificationPage extends StatefulWidget {
-  const PhoneVerificationPage({super.key});
+  final String phoneNumber;
+
+  const PhoneVerificationPage({super.key, required this.phoneNumber});
 
   @override
   State<PhoneVerificationPage> createState() => _PhoneVerificationPageState();
 }
 
 class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
+  String get _phoneNumber => widget.phoneNumber;
   TextEditingController _pinCodeController = TextEditingController();
 
   @override
@@ -53,14 +58,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   color: greenColor,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SetInitialProfilePage(),
-                      ),
-                    );
-                  },
+                  onPressed: _submitSmsCode,
                   child: const Text(
                     "Next",
                     style: TextStyle(
@@ -96,6 +94,12 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
           const Text("Enter your 6 digit code")
         ],
       ),
+    );
+  }
+
+  void _submitSmsCode() {
+    BlocProvider.of<PhoneAuthCubit>(context).submitSmsCode(
+      smsCode: _pinCodeController.text,
     );
   }
 }
