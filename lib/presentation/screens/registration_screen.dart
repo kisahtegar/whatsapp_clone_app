@@ -40,6 +40,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
         listener: (context, phoneAuthstate) {
           if (phoneAuthstate is PhoneAuthSuccess) {
+            debugPrint("Konci");
             BlocProvider.of<AuthCubit>(context).loggedIn();
           }
           if (phoneAuthstate is PhoneAuthFailure) {
@@ -57,6 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             return SetInitialProfilePage(phoneNumber: _phoneNumber);
           }
           if (phoneAuthState is PhoneAuthSuccess) {
+            debugPrint("motor");
             return BlocBuilder<AuthCubit, AuthState>(
               builder: (context, authState) {
                 if (authState is Authenticated) {
@@ -69,14 +71,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         );
                         return HomeScreen(userInfo: currentUserInfo);
                       }
+                      debugPrint("RegistrationScreen: UserLoading/Failure");
                       return Container();
                     },
                   );
                 }
+                debugPrint("RegistrationScreen: UnAuthenticated");
                 return Container();
               },
             );
           }
+          debugPrint("RegistrationScreen: PhoneAuthLoading/Failure");
           return _bodyWidget(context);
         },
       ),

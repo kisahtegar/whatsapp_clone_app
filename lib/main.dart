@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("MyApp: first page");
     return MultiBlocProvider(
       providers: [
         // NOTE: Calling this cubit when app started

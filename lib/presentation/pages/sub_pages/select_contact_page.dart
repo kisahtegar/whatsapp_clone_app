@@ -189,45 +189,51 @@ class _SelectContactPageState extends State<SelectContactPage> {
       child: ListView.builder(
         itemCount: contacts.length,
         itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 55,
-                      width: 55,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
+          return InkWell(
+            onTap: () {
+              BlocProvider.of<UserCubit>(context).createChatChannel(
+                  uid: widget.userInfo.uid!, otherUid: contacts[index].uid!);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 55,
+                        width: 55,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                        ),
+                        child: Image.asset('assets/profile_default.png'),
                       ),
-                      child: Image.asset('assets/profile_default.png'),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${contacts[index].label}",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                      const SizedBox(width: 10),
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${contacts[index].label}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5),
-                          const Text(
-                            "Hey there! I am Using WhatsApp Clone.",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                )
-              ],
+                            const SizedBox(height: 5),
+                            const Text(
+                              "Hey there! I am Using WhatsApp Clone.",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           );
         },

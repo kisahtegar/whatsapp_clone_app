@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/get_current_uid_usecase.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/is_sign_in_usecase.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/sign_out_usecase.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 
 part 'auth_state.dart';
 

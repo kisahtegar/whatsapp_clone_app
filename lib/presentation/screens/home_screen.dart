@@ -6,6 +6,7 @@ import 'package:whatsapp_clone_app/presentation/bloc/auth/auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/custom_tab_bar.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
+import '../bloc/phone_auth/phone_auth_cubit.dart';
 import '../pages/calls_page.dart';
 import '../pages/camera_page.dart';
 import '../pages/chat_page.dart';
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 InkWell(
                   onTap: () {
                     BlocProvider.of<AuthCubit>(context).loggedOut();
+                    BlocProvider.of<PhoneAuthCubit>(context).unRegisterPhone();
                   },
                   child: const Icon(Icons.more_vert),
                 ),
