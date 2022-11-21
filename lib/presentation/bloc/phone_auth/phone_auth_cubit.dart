@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:whatsapp_clone_app/domain/entities/user_entity.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/get_create_current_user_usecase.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/sign_in_with_phone_numbera_usecase.dart';
@@ -59,11 +60,16 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
         isOnline: true,
         status: "",
       ));
+      debugPrint("PhoneAuthCubit: inside submitProfileInfo");
       emit(PhoneAuthSuccess());
     } on SocketException catch (_) {
       emit(PhoneAuthFailure());
     } catch (e) {
       emit(PhoneAuthFailure());
     }
+  }
+
+  Future<void> unRegisterPhone() async {
+    emit(PhoneAuthFailure());
   }
 }
