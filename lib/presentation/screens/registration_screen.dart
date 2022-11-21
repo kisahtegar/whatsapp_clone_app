@@ -10,6 +10,9 @@ import 'package:whatsapp_clone_app/presentation/pages/set_initial_profile_page.d
 import 'package:whatsapp_clone_app/presentation/screens/home_screen.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
+import '../../data/models/user_model.dart';
+import '../bloc/user/user_cubit.dart';
+
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -57,9 +60,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             return BlocBuilder<AuthCubit, AuthState>(
               builder: (context, authState) {
                 if (authState is Authenticated) {
-                  return HomeScreen(uid: authState.uid);
+                  return BlocBuilder<UserCubit, UserState>(
+                    builder: (context, userState) {
+                      if (userState is UserLoaded) {
+                        final currentUserInfo = userState.users.firstWhere(
+                          (user) => user.uid == authState.uid,
+                          orElse: () => const UserModel(),
+                        );
+                        return HomeScreen(userInfo: currentUserInfo);
+                      }
+                      return Container();
+                    },
+                  );
                 }
-                return const SizedBox();
+                return Container();
               },
             );
           }

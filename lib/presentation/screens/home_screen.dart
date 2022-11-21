@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:whatsapp_clone_app/domain/entities/user_entity.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/auth/auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/custom_tab_bar.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
@@ -10,11 +12,11 @@ import '../pages/chat_page.dart';
 import '../pages/status_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String uid;
+  final UserEntity userInfo;
 
   const HomeScreen({
     super.key,
-    required this.uid,
+    required this.userInfo,
   });
 
   @override
@@ -28,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> get _pages => [
         const CameraPage(),
-        const ChatPage(),
+        ChatPage(userInfo: widget.userInfo),
         const StatusPage(),
         const CallsPage(),
       ];

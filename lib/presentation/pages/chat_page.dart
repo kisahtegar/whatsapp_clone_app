@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:whatsapp_clone_app/domain/entities/user_entity.dart';
+import 'package:whatsapp_clone_app/presentation/pages/sub_pages/select_contact_page.dart';
 import 'package:whatsapp_clone_app/presentation/pages/sub_pages/single_item_chat_user_page.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  final UserEntity userInfo;
+  const ChatPage({super.key, required this.userInfo});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -22,7 +26,14 @@ class _ChatPageState extends State<ChatPage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SelectContactPage(userInfo: widget.userInfo),
+            ),
+          );
+        },
         child: const Icon(Icons.chat),
       ),
     );
