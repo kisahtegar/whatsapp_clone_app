@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_clone_app/domain/entities/user_entity.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/get_device_number/get_device_number_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/user/user_cubit.dart';
+import 'package:whatsapp_clone_app/presentation/pages/sub_pages/single_communication_page.dart';
 import 'package:whatsapp_clone_app/presentation/widgets/theme/style.dart';
 
 import '../../../domain/entities/contact_entity.dart';
@@ -192,7 +193,22 @@ class _SelectContactPageState extends State<SelectContactPage> {
           return InkWell(
             onTap: () {
               BlocProvider.of<UserCubit>(context).createChatChannel(
-                  uid: widget.userInfo.uid!, otherUid: contacts[index].uid!);
+                uid: widget.userInfo.uid!,
+                otherUid: contacts[index].uid!,
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SingleCommunicationPage(
+                    recipientName: contacts[index].label!,
+                    recipientUID: contacts[index].uid!,
+                    recipientPhoneNumber: contacts[index].phoneNumber!,
+                    senderPhoneNumber: widget.userInfo.phoneNumber!,
+                    senderName: widget.userInfo.name!,
+                    senderUID: widget.userInfo.uid!,
+                  ),
+                ),
+              );
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 5),

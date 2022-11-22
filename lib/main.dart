@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatsapp_clone_app/data/models/user_model.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/auth/auth_cubit.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/communication/communication_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/get_device_number/get_device_number_cubit.dart';
+import 'package:whatsapp_clone_app/presentation/bloc/my_chat/my_chat_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/bloc/user/user_cubit.dart';
 import 'package:whatsapp_clone_app/presentation/screens/home_screen.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<PhoneAuthCubit>()),
         BlocProvider(create: (context) => di.sl<GetDeviceNumberCubit>()),
         BlocProvider(create: (context) => di.sl<UserCubit>()..getAllUsers()),
+        BlocProvider(create: (context) => di.sl<CommunicationCubit>()),
+        BlocProvider(create: (context) => di.sl<MyChatCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -66,7 +70,6 @@ class MyApp extends StatelessWidget {
             );
           },
         },
-        // home: const WelcomeScreen(),
       ),
     );
   }

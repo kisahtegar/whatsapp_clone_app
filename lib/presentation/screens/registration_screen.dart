@@ -40,7 +40,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
         listener: (context, phoneAuthstate) {
           if (phoneAuthstate is PhoneAuthSuccess) {
-            debugPrint("Konci");
             BlocProvider.of<AuthCubit>(context).loggedIn();
           }
           if (phoneAuthstate is PhoneAuthFailure) {

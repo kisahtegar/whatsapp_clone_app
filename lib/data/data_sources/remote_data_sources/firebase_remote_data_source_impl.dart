@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whatsapp_clone_app/data/models/my_chat_model.dart';
+import 'package:whatsapp_clone_app/data/models/text_message_model.dart';
 import 'package:whatsapp_clone_app/data/models/user_model.dart';
 import 'package:whatsapp_clone_app/domain/entities/text_message_entity.dart';
 import 'package:whatsapp_clone_app/domain/entities/my_chat_entity.dart';
@@ -102,9 +104,60 @@ class FirebaseRemoteDataSourceImpl extends FirebaseRemoteDataSource {
   }
 
   @override
-  Future<void> addToMyChat(MyChatEntity myChatEntity) {
-    // TODO: implement addToMyChat
-    throw UnimplementedError();
+  Future<void> addToMyChat(MyChatEntity myChatEntity) async {
+    final myChatRef = fireStore
+        .collection('users')
+        .doc(myChatEntity.senderUID)
+        .collection('myChat');
+
+    final otherChatRef = fireStore
+        .collection('users')
+        .doc(myChatEntity.recipientUID)
+        .collection('myChat');
+
+    final myNewChat = MyChatModel(
+      time: myChatEntity.time,
+      senderName: myChatEntity.senderName,
+      senderUID: myChatEntity.senderUID,
+      recipientUID: myChatEntity.recipientUID,
+      recipientName: myChatEntity.recipientName,
+      channelId: myChatEntity.channelId,
+      isArchived: myChatEntity.isArchived,
+      isRead: myChatEntity.isRead,
+      profileURL: myChatEntity.profileURL,
+      recentTextMessage: myChatEntity.recentTextMessage,
+      recipientPhoneNumber: myChatEntity.recipientPhoneNumber,
+      senderPhoneNumber: myChatEntity.senderPhoneNumber,
+    ).toJson();
+
+    final otherNewChat = MyChatModel(
+      time: myChatEntity.time,
+      senderName: myChatEntity.recipientName,
+      senderUID: myChatEntity.recipientUID,
+      recipientUID: myChatEntity.senderUID,
+      recipientName: myChatEntity.senderName,
+      channelId: myChatEntity.channelId,
+      isArchived: myChatEntity.isArchived,
+      isRead: myChatEntity.isRead,
+      profileURL: myChatEntity.profileURL,
+      recentTextMessage: myChatEntity.recentTextMessage,
+      recipientPhoneNumber: myChatEntity.senderPhoneNumber,
+      senderPhoneNumber: myChatEntity.recipientPhoneNumber,
+    ).toJson();
+
+    myChatRef.doc(myChatEntity.recipientUID).get().then((myChatDoc) {
+      if (!myChatDoc.exists) {
+        // create
+        myChatRef.doc(myChatEntity.recipientUID).set(myNewChat);
+        otherChatRef.doc(myChatEntity.senderUID).set(otherNewChat);
+        return;
+      } else {
+        // update
+        myChatRef.doc(myChatEntity.recipientUID).update(myNewChat);
+        otherChatRef.doc(myChatEntity.senderUID).update(otherNewChat);
+        return;
+      }
+    });
   }
 
   @override
@@ -157,8 +210,13 @@ class FirebaseRemoteDataSourceImpl extends FirebaseRemoteDataSource {
 
   @override
   Stream<List<MyChatEntity>> getMyChat(String uid) {
-    // TODO: implement getMyChat
-    throw UnimplementedError();
+    final myChatRef =
+        fireStore.collection('users').doc(uid).collection('myChat');
+
+    return myChatRef.orderBy('time', descending: true).snapshots().map(
+          (querySnap) =>
+              querySnap.docs.map((e) => MyChatModel.fromSnapshor(e)).toList(),
+        );
   }
 
   @override
@@ -180,14 +238,41 @@ class FirebaseRemoteDataSourceImpl extends FirebaseRemoteDataSource {
 
   @override
   Stream<List<TextMessageEntity>> getTextMessages(String channelId) {
-    // TODO: implement getTextMessages
-    throw UnimplementedError();
+    final message = fireStore
+        .collection('myChatChannel')
+        .doc(channelId)
+        .collection('messages');
+
+    return message.orderBy('time').snapshots().map(
+          (querySnapshot) => querySnapshot.docs
+              .map((e) => TextMessageModel.fromSnapshot(e))
+              .toList(),
+        );
   }
 
   @override
   Future<void> sendTextMessage(
-      TextMessageEntity textMessageEntity, String channelId) {
-    // TODO: implement sendTextMessage
-    throw UnimplementedError();
+    TextMessageEntity textMessageEntity,
+    String channelId,
+  ) async {
+    final message = fireStore
+        .collection('myChatChannel')
+        .doc(channelId)
+        .collection('messages');
+
+    final messageId = message.doc().id;
+
+    final newMessage = TextMessageModel(
+      message: textMessageEntity.message,
+      messageId: messageId,
+      messageType: textMessageEntity.messageType,
+      recipientName: textMessageEntity.recipientName,
+      recipientUID: textMessageEntity.recipientUID,
+      senderUID: textMessageEntity.senderUID,
+      senderUsername: textMessageEntity.senderUsername,
+      time: textMessageEntity.time,
+    ).toJson();
+
+    message.doc(messageId).set(newMessage);
   }
 }
