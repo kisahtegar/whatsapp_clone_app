@@ -7,7 +7,7 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("WelcomeScreen: welcome");
+    debugPrint("WelcomeScreen: Building!");
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(

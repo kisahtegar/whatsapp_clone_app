@@ -38,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("HomeScreen: Building!");
+    debugPrint("HomeSceen: UserEntity(${widget.userInfo})");
     return Scaffold(
       appBar: _currentPageIndex != 0
           ? AppBar(

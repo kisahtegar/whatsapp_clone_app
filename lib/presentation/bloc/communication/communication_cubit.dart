@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:whatsapp_clone_app/app_const.dart';
 import 'package:whatsapp_clone_app/domain/entities/my_chat_entity.dart';
 import 'package:whatsapp_clone_app/domain/entities/text_message_entity.dart';
@@ -80,6 +81,10 @@ class CommunicationCubit extends Cubit<CommunicationState> {
 
   Future<void> getMessages({String? senderId, String? recipientId}) async {
     emit(CommunicationLoading());
+    debugPrint("getMessages: Loading");
+    debugPrint("getMessages: senderId($senderId)");
+    debugPrint("getMessages: recipientId($recipientId)");
+
     try {
       final channelId = await getOneToOneSingleUserChatChannelUseCase.call(
         senderId!,

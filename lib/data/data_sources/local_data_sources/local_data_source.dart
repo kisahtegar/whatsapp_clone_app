@@ -12,15 +12,14 @@ class LocalDataSourceImpl extends LocalDataSource {
     List<ContactEntity> contacts = [];
     final getContactsData = await ContactsService.getContacts();
 
-    getContactsData.forEach((myContact) {
+    for (var myContact in getContactsData) {
       myContact.phones?.forEach((phoneData) {
         contacts.add(ContactEntity(
           phoneNumber: phoneData.value,
           label: myContact.displayName,
         ));
       });
-    });
-
+    }
     return contacts;
   }
 }

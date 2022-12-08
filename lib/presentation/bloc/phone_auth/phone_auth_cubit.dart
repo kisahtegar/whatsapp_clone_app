@@ -24,6 +24,7 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
   Future<void> submitVerifyPhoneNumber({required String phoneNumber}) async {
     emit(PhoneAuthLoading());
     try {
+      debugPrint("PhoneAuthCubit: VerifyPhoneNumber");
       await verifyPhoneNumberUseCase.call(phoneNumber);
       emit(PhoneAuthSmsCodeReceived());
     } on SocketException catch (_) {
@@ -36,6 +37,7 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
   Future<void> submitSmsCode({required String smsCode}) async {
     emit(PhoneAuthLoading());
     try {
+      debugPrint("PhoneAuthCubit: signInWithPhoneNumber -> submitSmsCode");
       await signInWithPhoneNumberUseCase.call(smsCode);
       emit(PhoneAuthProfileInfo());
     } on SocketException catch (_) {
@@ -51,6 +53,7 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
     required String phoneNumber,
   }) async {
     try {
+      debugPrint("PhoneAuthCubit: GetCreateCurrentUser");
       await getCreateCurrentUserUseCase.call(UserEntity(
         uid: "",
         name: name,
@@ -60,7 +63,6 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
         isOnline: true,
         status: "",
       ));
-      debugPrint("PhoneAuthCubit: inside submitProfileInfo");
       emit(PhoneAuthSuccess());
     } on SocketException catch (_) {
       emit(PhoneAuthFailure());
@@ -69,7 +71,5 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
     }
   }
 
-  Future<void> unRegisterPhone() async {
-    emit(PhoneAuthFailure());
-  }
+  void unRegisterPhone() => emit(PhoneAuthLogout());
 }

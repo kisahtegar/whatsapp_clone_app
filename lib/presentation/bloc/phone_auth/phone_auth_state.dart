@@ -15,6 +15,8 @@ class PhoneAuthSuccess extends PhoneAuthState {}
 
 class PhoneAuthFailure extends PhoneAuthState {}
 
+class PhoneAuthLogout extends PhoneAuthState {}
+
 class PhoneAuthSmsCodeReceived extends PhoneAuthState {
   @override
   String toString() {
