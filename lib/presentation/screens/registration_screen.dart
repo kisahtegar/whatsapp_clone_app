@@ -36,6 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("RegistrationScreen: Building!");
     return Scaffold(
       body: BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
         listener: (context, phoneAuthstate) {
@@ -57,7 +58,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             return SetInitialProfilePage(phoneNumber: _phoneNumber);
           }
           if (phoneAuthState is PhoneAuthSuccess) {
-            debugPrint("motor");
             return BlocBuilder<AuthCubit, AuthState>(
               builder: (context, authState) {
                 if (authState is Authenticated) {

@@ -152,6 +152,7 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
         itemCount: messages.messages.length,
         itemBuilder: (context, index) {
           final message = messages.messages[index];
+          // debugPrint(messages.toString());
 
           if (message.senderUID == widget.senderUID) {
             // This view for sender message

@@ -21,27 +21,15 @@ class SelectContactPage extends StatefulWidget {
 class _SelectContactPageState extends State<SelectContactPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<GetDeviceNumberCubit>(context).getDeviceNumbers();
-    _requestContactPermission();
-  }
-
-  Future<void> _requestContactPermission() async {
-    var status = await Permission.contacts.status;
-    if (status.isGranted) {
-      print("Permission is granted");
-    } else if (status.isDenied) {
-      // We didn't ask for permission yet or the permission has been denied before but not permanently.
-      if (await Permission.contacts.request().isGranted) {
-        // Either the permission was already granted before or the user just granted it.
-        print("Permission was granted");
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("SelectContactPage: building");
+    debugPrint("SelectContactPage: UserEntity(${widget.userInfo})");
+
     return BlocBuilder<GetDeviceNumberCubit, GetDeviceNumberState>(
       builder: (context, getDeviceNumberState) {
         if (getDeviceNumberState is GetDeviceNumberLoaded) {
@@ -53,10 +41,22 @@ class _SelectContactPageState extends State<SelectContactPage> {
                     .where((user) => user.uid != widget.userInfo.uid)
                     .toList();
 
+                debugPrint(
+                    "SelectContactPage: dbUsers.length(${dbUsers.length})");
+                debugPrint("SelectContactPage: dbUsers(${dbUsers.toList()})");
+                debugPrint(
+                    "SelectContactPage: contacts.length[${contacts.length}]");
+                debugPrint("SelectContactPage: contacts[${contacts.toList()}]");
+
+                // TODO: ADDING CONTACT/LOOP 2 TIMES IN ContactEntity
                 getDeviceNumberState.contacts.forEach((deviceUserNumber) {
-                  dbUsers.forEach((dbUser) {
+                  for (var dbUser in dbUsers) {
+                    debugPrint("dbUsers(${dbUsers.toList()})");
                     if (dbUser.phoneNumber ==
                         deviceUserNumber.phoneNumber!.replaceAll('', '')) {
+                      debugPrint("selectContactPage: dbUser(${dbUser})");
+                      debugPrint(
+                          "Adding to ContactEntity times:${contacts.length}");
                       contacts.add(ContactEntity(
                         label: dbUser.name,
                         phoneNumber: dbUser.phoneNumber,
@@ -64,8 +64,12 @@ class _SelectContactPageState extends State<SelectContactPage> {
                         status: dbUser.status,
                       ));
                     }
-                  });
+                  }
                 });
+
+                debugPrint("SelectContactPage: contacts[${contacts.toList()}]");
+                debugPrint(
+                    "SelectContactPage: contacts.length[${contacts.length}]");
 
                 // NOTE: When UserLoaded return to this page
                 return Scaffold(

@@ -29,6 +29,8 @@ class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("SetInitialProfilePage: Building!");
+    debugPrint("SetInitialProfilePage: phoneNumber(${widget.phoneNumber})");
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),

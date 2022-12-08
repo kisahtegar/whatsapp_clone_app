@@ -21,15 +21,33 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
-    BlocProvider.of<MyChatCubit>(context).getMyChat(uid: widget.userInfo.uid);
     super.initState();
+    BlocProvider.of<MyChatCubit>(context).getMyChat(uid: widget.userInfo.uid);
+    _requestContactPermission();
+  }
+
+  Future<void> _requestContactPermission() async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+      debugPrint("SelectContactPage: Permission is granted");
+    } else if (status.isDenied) {
+      // We didn't ask for permission yet or the permission has been denied before but not permanently.
+      if (await Permission.contacts.request().isGranted) {
+        // Either the permission was already granted before or the user just granted it.
+        debugPrint("SelectContactPage: Permission was granted");
+      }
+    }
+    return;
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("ChatPage: Building!");
+    debugPrint("ChatPage: UserEntity(${widget.userInfo})");
     return Scaffold(
       body: BlocBuilder<MyChatCubit, MyChatState>(
         builder: (_, myChatState) {
+          debugPrint("ChatPage: myChatState is $myChatState");
           if (myChatState is MyChatLoaded) {
             return _myChatList(myChatState);
           }

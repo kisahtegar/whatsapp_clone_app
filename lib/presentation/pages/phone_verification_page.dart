@@ -20,6 +20,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("PhoneVerificationPage: Building!");
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),

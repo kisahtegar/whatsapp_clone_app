@@ -9,6 +9,10 @@ abstract class MyChatState extends Equatable {
 
 class MyChatInitial extends MyChatState {}
 
+class MyChatLoading extends MyChatState {}
+
+class MyChatFailure extends MyChatState {}
+
 class MyChatLoaded extends MyChatState {
   final List<MyChatEntity> myChat;
 

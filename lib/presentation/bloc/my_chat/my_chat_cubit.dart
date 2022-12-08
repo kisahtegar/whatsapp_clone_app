@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:whatsapp_clone_app/domain/entities/my_chat_entity.dart';
 import 'package:whatsapp_clone_app/domain/use_cases/get_my_chat_usecase.dart';
 
@@ -13,12 +14,17 @@ class MyChatCubit extends Cubit<MyChatState> {
   MyChatCubit({required this.getMyChatUseCase}) : super(MyChatInitial());
 
   Future<void> getMyChat({String? uid}) async {
+    debugPrint("MyChatCubit: getMychat!");
+    emit(MyChatLoading());
     try {
       final myChatStreamData = getMyChatUseCase.call(uid!);
       myChatStreamData.listen((myChatData) {
         emit(MyChatLoaded(myChat: myChatData));
       });
     } on SocketException catch (_) {
-    } catch (_) {}
+      emit(MyChatFailure());
+    } catch (_) {
+      emit(MyChatFailure());
+    }
   }
 }
